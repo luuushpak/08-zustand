@@ -16,6 +16,7 @@ import { Toaster } from "react-hot-toast";
 import EmptyNotesMessage from "@/components/EmptyNotesMessage/EmptyNotesMessage";
 import Loader from "@/components/Loader/Loader";
 import { NoteTag } from "@/types/note";
+import Link from "next/link";
 
 interface NotesClientProps {
   tag: NoteTag | undefined;
@@ -31,7 +32,6 @@ function NotesClient({ tag }: NotesClientProps) {
     queryFn: () => fetchNotes({ query, page, tag }),
     placeholderData: keepPreviousData,
     refetchOnMount: false,
-    staleTime: 1000 * 60 * 5,
   });
 
   const totalPages = data?.totalPages ?? 0;
@@ -46,7 +46,6 @@ function NotesClient({ tag }: NotesClientProps) {
     setPage(1);
   }, 300);
 
-  const handleShowModal = () => setIsModal(true);
   const handleCloseModal = () => setIsModal(false);
 
   return (
@@ -60,9 +59,9 @@ function NotesClient({ tag }: NotesClientProps) {
             selectPage={handleSelectPage}
           />
         )}
-        <button className={css.button} onClick={handleShowModal}>
+        <Link href="/notes/action/create" className={css.button}>
           Create note +
-        </button>
+        </Link>
       </header>
       {isLoading && <Loader />}
       {isError && <ErrorMessage />}
@@ -72,7 +71,7 @@ function NotesClient({ tag }: NotesClientProps) {
       )}
       {isModal && (
         <Modal handleCloseModal={handleCloseModal}>
-          <NoteForm handleCloseModal={handleCloseModal} />
+          <NoteForm />
         </Modal>
       )}
       <Toaster position="top-center" />
