@@ -10,8 +10,6 @@ import { useState } from "react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useDebouncedCallback } from "use-debounce";
 import { DEFAULT_QUERY, DEFAULT_PAGE } from "@/constants/notes";
-import Modal from "@/components/Modal/Modal";
-import NoteForm from "@/components/NoteForm/NoteForm";
 import { Toaster } from "react-hot-toast";
 import EmptyNotesMessage from "@/components/EmptyNotesMessage/EmptyNotesMessage";
 import Loader from "@/components/Loader/Loader";
@@ -25,7 +23,6 @@ interface NotesClientProps {
 function NotesClient({ tag }: NotesClientProps) {
   const [query, setQuery] = useState(DEFAULT_QUERY);
   const [page, setPage] = useState(DEFAULT_PAGE);
-  const [isModal, setIsModal] = useState(false);
 
   const { data, isError, isLoading } = useQuery({
     queryKey: ["notes", query, page, tag],
@@ -45,8 +42,6 @@ function NotesClient({ tag }: NotesClientProps) {
     setQuery(value);
     setPage(1);
   }, 300);
-
-  const handleCloseModal = () => setIsModal(false);
 
   return (
     <div className={css.app}>
@@ -68,11 +63,6 @@ function NotesClient({ tag }: NotesClientProps) {
       {fetchedNotes.length > 0 && <NoteList notes={fetchedNotes} />}
       {!isError && !isLoading && fetchedNotes.length === 0 && (
         <EmptyNotesMessage />
-      )}
-      {isModal && (
-        <Modal handleCloseModal={handleCloseModal}>
-          <NoteForm />
-        </Modal>
       )}
       <Toaster position="top-center" />
     </div>
